@@ -1,0 +1,8 @@
+content_root:  'data'
+
+server:
+  listen_address: ''
+  listen_port: 8080
+
+repositories:
+  - libs-release

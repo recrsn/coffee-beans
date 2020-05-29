@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -8,17 +9,15 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/agathver/coffee-beans/config"
+	"github.com/agathver/coffee-beans/utils"
 )
 
-const root = "data/repository"
-
-func must(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
+	cfg, err := config.Load()
+	utils.Must(err)
+
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -26,11 +25,24 @@ func main() {
 		})
 	})
 
-	r.PUT("/repository/*artifact", func(c *gin.Context) {
+	for _, repository := range cfg.Repositories() {
+		println("Repository: ", repository.Id())
+
+		id := repository.Id()
+		r.PUT(fmt.Sprintf("/repo/%s/*artifact", id), uploadHandler(id, cfg.ContentRoot()))
+		r.StaticFS(fmt.Sprintf("/repo/%s", id), gin.Dir(filepath.Join(cfg.ContentRoot(), "repositories", id), true))
+	}
+
+	addr := fmt.Sprintf("%s:%d", cfg.Server().ListenAddress(), cfg.Server().ListenPort())
+	utils.Must(r.Run(addr))
+}
+
+func uploadHandler(repository, contentRoot string) func(c *gin.Context) {
+	return func(c *gin.Context) {
 		artifactPath := strings.TrimLeft(c.Param("artifact"), "/")
 		println(artifactPath)
 
-		destPath := filepath.Join(root, artifactPath)
+		destPath := filepath.Join(contentRoot, repository, artifactPath)
 
 		println(destPath)
 
@@ -38,22 +50,15 @@ func main() {
 
 		println(dir)
 
-		must(os.MkdirAll(dir, 0750|os.ModeDir))
+		utils.Must(os.MkdirAll(dir, 0750|os.ModeDir))
 
 		destFile, err := os.Create(destPath)
-		must(err)
-		defer destFile.Close()
+		utils.Must(err)
+		defer utils.MustDo(destFile.Close)
 
 		_, err = io.Copy(destFile, c.Request.Body)
-		must(err)
+		utils.Must(err)
 
 		c.String(http.StatusOK, "OK")
-	})
-
-	r.StaticFS("/repository", gin.Dir("data/repository", true))
-	err := r.Run()
-
-	if err != nil {
-		panic(err)
 	}
 }
