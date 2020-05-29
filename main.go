@@ -5,7 +5,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -26,8 +28,6 @@ func main() {
 	})
 
 	for _, repository := range cfg.Repositories() {
-		println("Repository: ", repository.Id())
-
 		id := repository.Id()
 		r.PUT(fmt.Sprintf("/repo/%s/*artifact", id), uploadHandler(id, cfg.ContentRoot()))
 		r.StaticFS(fmt.Sprintf("/repo/%s", id), gin.Dir(filepath.Join(cfg.ContentRoot(), "repositories", id), true))
@@ -40,15 +40,15 @@ func main() {
 func uploadHandler(repository, contentRoot string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		artifactPath := strings.TrimLeft(c.Param("artifact"), "/")
-		println(artifactPath)
 
-		destPath := filepath.Join(contentRoot, repository, artifactPath)
+		if isPathInvalid(artifactPath) {
+			c.String(http.StatusBadRequest, "Invalid artifact path\n")
+			return
+		}
 
-		println(destPath)
+		destPath := filepath.Clean(filepath.Join(contentRoot, repository, artifactPath))
 
 		dir := filepath.Dir(destPath)
-
-		println(dir)
 
 		utils.Must(os.MkdirAll(dir, 0750|os.ModeDir))
 
@@ -59,6 +59,20 @@ func uploadHandler(repository, contentRoot string) func(c *gin.Context) {
 		_, err = io.Copy(destFile, c.Request.Body)
 		utils.Must(err)
 
-		c.String(http.StatusOK, "OK")
+		c.String(http.StatusCreated, "OK\n")
 	}
+}
+
+func isPathInvalid(artifactPath string) bool {
+	match, _ := regexp.MatchString(`[\w][\w/.\-][\w]`, artifactPath)
+
+	if !match {
+		return true
+	}
+
+	if artifactPath != path.Clean(artifactPath) {
+		return true
+	}
+
+	return false
 }
