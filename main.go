@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,12 +18,11 @@ func main() {
 
 	r.GET("/ping", handlers.Ping())
 
-	for _, repository := range cfg.Repositories() {
-		id := repository.Id()
-		r.PUT(fmt.Sprintf("/repo/%s/*artifact", id), handlers.Upload(id, cfg.ContentRoot()))
-		r.StaticFS(fmt.Sprintf("/repo/%s", id), gin.Dir(filepath.Join(cfg.ContentRoot(), "repositories", id), true))
+	for _, repository := range cfg.Repositories {
+		r.PUT(fmt.Sprintf("/repo/%s/*artifact", repository.Id), handlers.Upload(repository.Root))
+		r.StaticFS(fmt.Sprintf("/repo/%s", repository.Id), gin.Dir(repository.Root, true))
 	}
 
-	addr := fmt.Sprintf("%s:%d", cfg.Server().ListenAddress(), cfg.Server().ListenPort())
+	addr := fmt.Sprintf("%s:%d", cfg.Server.ListenAddress, cfg.Server.ListenPort)
 	utils.Must(r.Run(addr))
 }

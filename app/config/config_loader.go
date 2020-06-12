@@ -1,20 +1,20 @@
 package config
 
 import (
+	"log"
+
+	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
 const (
-	contentRootKey         = "content_root"
 	listenAddressConfigKey = "server.listen_address"
 	listenPortConfigKey    = "server.listen_port"
-	repositoriesConfigKey  = "repositories"
 )
 
 func Load() (Config, error) {
 	viper.SetDefault(listenAddressConfigKey, "")
 	viper.SetDefault(listenPortConfigKey, "8080")
-	viper.SetDefault(contentRootKey, "data")
 
 	viper.SetConfigFile("coffee-beans.yaml")
 	viper.AddConfigPath("/etc")
@@ -25,32 +25,18 @@ func Load() (Config, error) {
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		return Config{}, err
+		return Config{}, errors.Wrapf(err, "error loading config")
 	}
 
-	return Config{
-		server:       readServerConfig(),
-		repositories: readRepositoryConfig(),
-		contentRoot:  viper.GetString(contentRootKey),
-	}, nil
-}
+	var c Config
 
-func readRepositoryConfig() []Repository {
-	repositoryIds := viper.GetStringSlice(repositoriesConfigKey)
+	err = viper.Unmarshal(&c)
 
-	repositories := make([]Repository, 0, len(repositoryIds))
+	log.Printf("Loaded config: %+v\n", c)
 
-	for _, id := range repositoryIds {
-		repository := Repository{id}
-		repositories = append(repositories, repository)
+	if err != nil {
+		return Config{}, errors.Wrapf(err, "error loading config")
 	}
 
-	return repositories
-}
-
-func readServerConfig() Server {
-	return Server{
-		listenAddress: viper.GetString(listenAddressConfigKey),
-		listenPort:    viper.GetInt(listenPortConfigKey),
-	}
+	return c, err
 }

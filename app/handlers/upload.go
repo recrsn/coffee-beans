@@ -14,7 +14,7 @@ import (
 )
 
 // Upload creates a new handler to handle artifact uploads
-func Upload(repository, contentRoot string) func(c *gin.Context) {
+func Upload(contentRoot string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		artifactPath := strings.TrimLeft(c.Param("artifact"), "/")
 
@@ -23,7 +23,7 @@ func Upload(repository, contentRoot string) func(c *gin.Context) {
 			return
 		}
 
-		destPath := filepath.Clean(filepath.Join(contentRoot, repository, artifactPath))
+		destPath := filepath.Clean(filepath.Join(contentRoot, artifactPath))
 
 		dir := filepath.Dir(destPath)
 

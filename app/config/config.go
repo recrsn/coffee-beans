@@ -1,19 +1,17 @@
 package config
 
+type Server struct {
+	ListenAddress string `mapstructure:"listen_address"`
+	ListenPort    int    `mapstructure:"listen_port"`
+}
+
+type Repository struct {
+	Id      string
+	Backend string
+	Root    string
+}
+
 type Config struct {
-	server       Server
-	repositories []Repository
-	contentRoot  string
-}
-
-func (c Config) Server() Server {
-	return c.server
-}
-
-func (c Config) Repositories() []Repository {
-	return c.repositories
-}
-
-func (c Config) ContentRoot() string {
-	return c.contentRoot
+	Server       Server
+	Repositories []Repository
 }
