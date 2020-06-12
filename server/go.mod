@@ -1,4 +1,4 @@
-module github.com/agathver/coffee-beans
+module github.com/agathver/coffee-beans/server
 
 go 1.14
 

@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/agathver/coffee-beans/app/config"
-	"github.com/agathver/coffee-beans/app/handlers"
-	"github.com/agathver/coffee-beans/app/utils"
+	"github.com/agathver/coffee-beans/server/config"
+	"github.com/agathver/coffee-beans/server/handlers"
+	"github.com/agathver/coffee-beans/server/utils"
 )
 
 func main() {

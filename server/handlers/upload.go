@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/agathver/coffee-beans/app/utils"
+	"github.com/agathver/coffee-beans/server/utils"
 	"github.com/gin-gonic/gin"
 )
 

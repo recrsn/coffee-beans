@@ -6,5 +6,6 @@ jobs:
     working_directory: /go/src/github.com/agathver/coffee-beans
     steps:
       - checkout
+      - run: cd server
       - run: go vet ./...
       - run: go test -v ./...
