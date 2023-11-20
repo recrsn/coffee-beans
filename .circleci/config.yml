@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.14
-    working_directory: /go/src/github.com/agathver/coffee-beans
+    working_directory: /go/src/github.com/recrsn/coffee-beans
     steps:
       - checkout
       - run: cd server

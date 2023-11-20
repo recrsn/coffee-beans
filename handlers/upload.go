@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/agathver/coffee-beans/server/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/recrsn/coffee-beans/utils"
 )
 
 // Upload creates a new handler to handle artifact uploads
@@ -23,7 +23,7 @@ func Upload(contentRoot string) func(c *gin.Context) {
 			return
 		}
 
-		destPath := filepath.Clean(filepath.Join(contentRoot, artifactPath))
+		destPath := filepath.Join(contentRoot, filepath.Clean(artifactPath))
 
 		dir := filepath.Dir(destPath)
 
@@ -41,7 +41,7 @@ func Upload(contentRoot string) func(c *gin.Context) {
 }
 
 func isPathInvalid(artifactPath string) bool {
-	match, _ := regexp.MatchString(`[\w][\w/.\-][\w]`, artifactPath)
+	match, _ := regexp.MatchString(`\w[\w/.\-]\w`, artifactPath)
 
 	if !match {
 		return true

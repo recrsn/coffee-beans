@@ -10,11 +10,13 @@ import (
 const (
 	listenAddressConfigKey = "server.listen_address"
 	listenPortConfigKey    = "server.listen_port"
+	baseURLConfigKey       = "server.base_url"
 )
 
 func Load() (Config, error) {
 	viper.SetDefault(listenAddressConfigKey, "")
 	viper.SetDefault(listenPortConfigKey, "8080")
+	viper.SetDefault(baseURLConfigKey, "/beans")
 
 	viper.SetConfigFile("coffee-beans.yaml")
 	viper.AddConfigPath("/etc")

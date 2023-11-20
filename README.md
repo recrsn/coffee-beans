@@ -2,7 +2,7 @@
 
 A small file storage server that supports a simple GET/PUT based protocol
 
-Originally created to provide a tiny private maven repository.
+Originally created to provide a tiny private maven/pypi repository.
 
 ## Usage
 
@@ -12,7 +12,7 @@ Originally created to provide a tiny private maven repository.
       - libs-release
     ```
 2. Start `coffee-beans` to start an instance with a single repo called `libs-release`
-serving files from `data` and listening at http://localhost:8080/repo/libs-release
+serving files from `data` and listening at http://localhost:8080/beans/libs-release
 
 You can use Gradle or Maven publish tasks to upload to this repository.
 

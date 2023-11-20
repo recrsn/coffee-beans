@@ -1,0 +1,16 @@
+server:
+  listen_address: ''
+  listen_port: 8080
+  base_url: '/beans'
+
+repositories:
+  - id: libs-release
+    name: 'Libs (release)'
+    root: 'data/libs-release'
+    type: maven
+    description: 'Internal Release Repository'
+  - id: pip
+    name: 'Python'
+    root: 'data/pip'
+    type: pip
+    description: 'Internal Python Repository'
