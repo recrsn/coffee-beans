@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/recrsn/coffee-beans/repositories"
+	"log"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,14 +12,21 @@ import (
 	"github.com/recrsn/coffee-beans/utils"
 )
 
+var (
+	version = "dev"
+	commit  = "HEAD"
+)
+
 func main() {
+	log.Printf("Coffee Beans %s (%s)\n", version, commit)
+
 	cfg, err := config.Load()
 	utils.Must(err)
 
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 
-	router.GET("/ping", handlers.Ping())
+	router.GET("/health", handlers.HealthCheck())
 
 	manager := repositories.NewRepositoryManager(cfg.Server.BaseURL, cfg.Repositories)
 

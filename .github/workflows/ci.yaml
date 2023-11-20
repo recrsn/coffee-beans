@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+      - name: Build
+        run: |
+          mkdir -p ./coffee-beans
+          cp coffee-beans.yaml ./coffee-beans
+          go build -o ./coffee-beans/coffee-beans -ldflags "-X main.version=${GITHUB_REF#refs/*/} -X main.commit=${GITHUB_SHA}"
+      - name: Test
+        run: |
+          go test -v ./...
+      - name: Package
+        run: |
+          tar -czf coffee-beans.tar.gz ./coffee-beans
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/tags/v*'
+        with:
+          files: coffee-beans.tar.gz

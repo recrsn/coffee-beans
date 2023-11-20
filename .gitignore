@@ -19,3 +19,5 @@ vendor/
 /server
 /data/
 /tmp/
+/coffee-beans/
+coffee-beans.tar.gz
