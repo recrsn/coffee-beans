@@ -19,7 +19,7 @@ func Load() (Config, error) {
 	viper.SetDefault(baseURLConfigKey, "/beans")
 
 	viper.SetConfigFile("coffee-beans.yaml")
-	viper.AddConfigPath("/etc")
+	viper.AddConfigPath("../etc")
 	viper.AddConfigPath(".")
 
 	viper.AutomaticEnv()

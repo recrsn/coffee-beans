@@ -12,5 +12,5 @@ repositories:
   - id: pip
     name: 'Python'
     root: 'data/pip'
-    type: pip
+    type: pypi
     description: 'Internal Python Repository'

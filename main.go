@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/recrsn/coffee-beans/repositories"
+	"html/template"
+	"io/fs"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 
@@ -18,13 +21,28 @@ var (
 )
 
 func main() {
-	log.Printf("Coffee Beans %s (%s)\n", version, commit)
+	log.Printf("Coffee Beans %s (%s-%s)\n", version, commit, buildMode)
+
+	gin.SetMode(buildMode)
 
 	cfg, err := config.Load()
 	utils.Must(err)
 
 	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
+
+	// version is a build-time variable, so it's always set
+	if buildMode == "release" {
+		router.SetHTMLTemplate(template.Must(template.New("").ParseFS(embedFS, "templates/*.html")))
+
+		static, err := fs.Sub(embedFS, "static")
+		utils.Must(err)
+
+		router.StaticFS("/static", http.FS(static))
+	} else {
+		log.Printf("Running in development mode, loading templates and assets from filesystem\n")
+		router.LoadHTMLGlob("templates/*.html")
+		router.Static("/static", "static")
+	}
 
 	router.GET("/health", handlers.HealthCheck())
 

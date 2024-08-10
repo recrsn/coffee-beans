@@ -1,0 +1,16 @@
+{
+  "name": "coffee-beans",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Coffee beans is an artifact repository",
+  "scripts": {
+    "build": "npx tailwindcss -i ./assets/index.css -o ./static/index.css",
+    "dev": "npx tailwindcss -i ./assets/index.css -o ./static/index.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.3.5"
+  }
+}

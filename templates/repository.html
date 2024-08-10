@@ -6,12 +6,27 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beans</title>
+    <link rel="stylesheet" href="/static/index.css"/>
 </head>
-<body>
-<h1>{{.Name}}</h1>
-<p>{{.Description}}</p>
-<div>
-    <a href="{{.StaticPath}}">Browse files</a>
-</div>
+<body class="flex flex-col">
+<header>
+    <div class="flex justify-between items-center bg-amber-500 p-4">
+        <div class="flex flex-row items-center gap-2">
+            <h1 class="font-bold text-3xl">Beans</h1>
+            <h2 class="font-bold text-xl">{{.Name}}</h2>
+        </div>
+        <nav>
+            <a class="text-white" href="/">Home</a>
+            <a class="text-white" href="/repositories">Repositories</a>
+        </nav>
+    </div>
+</header>
+<main class="p-8">
+    <div class="max-w-md mx-auto">
+        <h2 class="font-bold text-2xl">{{.Name}}</h2>
+        <p>{{.Description}}</p>
+        <a class="text-amber-600" href="{{.StaticPath}}">Browse files</a>
+    </div>
+</main>
 </body>
 </html>

@@ -6,22 +6,35 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beans</title>
+    <link rel="stylesheet" href="/static/index.css" />
 </head>
-<body>
-<h1>Beans</h1>
-<h2>Repositories</h2>
-<ul>
-    {{range .repositories}}
-    <li>
-        <div>
-            <a href="/repositories/{{.Id}}">
-                <h3>{{.Name}}</h3>
-                <span>{{.Type}}</span>
-            </a>
-        </div>
-        <p>{{.Description}}</p>
-    </li>
-    {{end}}
-</ul>
+<body class="flex flex-col">
+<header>
+    <div class="flex justify-between items-center bg-amber-500 p-4">
+        <h1 class="font-bold text-3xl">Beans</h1>
+        <nav>
+            <a class="text-white" href="/">Home</a>
+            <a class="text-white" href="/repositories">Repositories</a>
+        </nav>
+    </div>
+</header>
+<main class="p-8">
+    <div class="max-w-md mx-auto">
+        <h2 class="font-bold text-2xl">All available repositories</h2>
+        <ul class="flex flex-col mt-4">
+            {{range .repositories}}
+            <li class="flex flex-col p-4">
+                <div>
+                    <a href="/repositories/{{.Id}}" class="text-amber-600 flex flex-row gap-2 items-center">
+                        <h3 class="font-bold">{{.Name}}</h3>
+                        <img class="w-6 h-6" src="/static/images/{{.Type}}.svg" />
+                    </a>
+                </div>
+                <p>{{.Description}}</p>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+</main>
 </body>
 </html>
